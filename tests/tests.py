@@ -1,19 +1,13 @@
-from firebase_config import get_db
+import os
+from dotenv import load_dotenv
 
-db = get_db()
+load_dotenv()
 
-users_ref = db.child("users")
-users = users_ref.get()
-
-key_ids_list = [] 
-
-if users.val():
-    for user_id, user_info in users.val().items():
-        key = user_info.get('key')  
-        key_id = key.get('key_id') if key else None 
-        
-        if key_id: 
-            key_ids_list.append(key_id) 
-
-
-
+print('apiKey: ', os.getenv("API_KEY")),
+print('authDomain: ', os.getenv("AUTH_DOMAIN")),
+print('databaseURL: ', os.getenv("DATABASE_URL")),
+print('projectId: ', os.getenv("PROJECT_ID")),
+print('storageBucket: ', os.getenv("STORAGE_BUCKET")),
+print('messagingSenderId: ', os.getenv("MESSAGING_SENDER_ID")),
+print('appId: ', os.getenv("APP_ID")),
+print('measurementId: ', os.getenv("MEASUREMENT_ID"))
