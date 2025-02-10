@@ -45,4 +45,3 @@ ID: [green b]Active[/green b].
 ''')
 
 expires_list, user_ids = get_expires()
-check_valid(expires_list, user_ids)

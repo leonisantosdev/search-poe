@@ -1,21 +1,19 @@
-from rich.console import Console
-from rich.table import Table
+from firebase_config import get_db
 
-def key_log(id, username, key, expires_at, valid):
-  console = Console()
+db = get_db()
 
-  table = Table()
+users_ref = db.child("users")
+users = users_ref.get()
 
-  table.add_column("ID", justify="left", no_wrap=True)
-  table.add_column("USERNAME")
-  table.add_column("KEY")
-  table.add_column("VALIDITY")
-  table.add_column("STATUS")
+key_ids_list = [] 
 
-  table.add_row()
-  table.add_row()
-  table.add_row()
-  table.add_row()
-  table.add_row()
+if users.val():
+    for user_id, user_info in users.val().items():
+        key = user_info.get('key')  
+        key_id = key.get('key_id') if key else None 
+        
+        if key_id: 
+            key_ids_list.append(key_id) 
 
-  console.print(table)
+
+

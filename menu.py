@@ -12,5 +12,4 @@ def menu():
 def response_menu():
     response = input('''
     Response: ''')
-    response = int(response)
     return response

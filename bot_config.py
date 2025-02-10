@@ -7,7 +7,9 @@ import time
 from create_user import create_random_username, create_random_password
 from register_user import register_user, copy_user
 from key_gen import key_generator
-from key_log import key_log, user_data
+from key_log import key_log
+from time import sleep
+from rich.progress import Progress, BarColumn, TextColumn
 
 db = get_db()
 
@@ -23,9 +25,14 @@ clean_sys()
 while True:
     menu()
     response = response_menu()
-    clean_sys()
 
-    if response == 1:
+    if response != '1' or '2' or '3' or '4':
+        clean_sys()
+        rc.print('''
+    [red blink]Choose a valid option between 1 and 4![/red blink]''')
+
+    if response == '1':
+        clean_sys()
         username = create_random_username()
         password = create_random_password()
 
@@ -39,7 +46,7 @@ while True:
     
     1. [green]Yes[/green]
     2. [red]No[/red]''')
-            
+        
             response_copy = input('''
     Response: ''')
 
@@ -47,15 +54,15 @@ while True:
                 clean_sys()
                 copy_user(id=user_id, username=username)
                 rc.print('''
-    [green blink]User copy.[/green blink]''')
+    [green b blink]User copy.[/green b blink]''')
             if response_copy == '2':
                 clean_sys()
                 continue
         except:
             rc.print('''
-    [red b]User not found![/red b] ❌''')
+    [red b blink]User not found![/red b blink] ❌''')
 
-    elif response == 2:
+    elif response == '2':
         def search_user(tabel, username):
             users = db.child(tabel).get()
             
@@ -65,7 +72,8 @@ while True:
                     return user_id
                 
         key = key_generator()
-            
+        
+        clean_sys()
         rc.print(f''' 
     [green b blink]Key generated successfully![/green b blink] 🔑 ✅
 
@@ -79,19 +87,20 @@ while True:
         if username == '1':
             clean_sys()
             continue
-        else:
+        elif username != '1':
+            
             clean_sys()
             available_times = {
                 "1": timedelta(days=1),
                 "7": timedelta(days=7),
-                "10": timedelta(seconds=10),
+                "2": timedelta(minutes=2),
                 "30": timedelta(days=30)
             }
 
             rc.print('''
     [1] - Day
     [7] - Days
-    [10] - Seconds (Test)
+    [2] - Minutes (Test)
     [30] - Days
     ''')
 
@@ -110,24 +119,45 @@ while True:
                     "created_at": time_now.strftime("%Y-%m-%d %H:%M:%S"),
                     "expires_at": expiration.strftime("%Y-%m-%d %H:%M:%S")
                 })
-
+                
                 rc.print(f'''
     Key assigned successfully for {chosen_time} days! 🔑 ✅''')
             else:
                 clean_sys()
                 rc.print('''
-    [red blink]User not found![/red blink] ❌''')
+    [red b blink]User not found![/red b blink] ❌''')
+                
+
+    elif response == '3':
+        while True:
+            clean_sys()
+            key_log()
+            rc.print(
+'''
+1. [red b]Back[/red b]
+2. Update''')
+            
+            response_keylog = input('''
+Response: ''')
+            rc.print('''''')
+            
+            if response_keylog == '1':
+                clean_sys()
+                break
+            elif response_keylog == '2':
+                with Progress(
+                    TextColumn('Loading...'),
+                    BarColumn(pulse_style="white", finished_style="green", style="white", complete_style="yellow"),
+                    TextColumn('[white]{task.percentage:>3.0f}%')
+                ) as progress:
+                        task = progress.add_task("", total=100)
+
+                        for i in range(100):  
+                            progress.update(task, advance=(100 / 100))
+                            sleep(0.02)
+                clean_sys()
                 continue
 
-    elif response == 3:
-        key_log(user_data=user_data)
-        rc.print(
-'''
-1. Back''')
-        response_keylog = input('''
-Response: ''')
-        if response_keylog == '1':
-            clean_sys()
-            continue
-    elif response == 4:
+    elif response == '4':
+        clean_sys()
         break
